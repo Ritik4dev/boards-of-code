@@ -71,8 +71,114 @@
     - Incoming name rises from below (`yPercent: 0`) with center letters shooting up first, creating an upward-bending arch before settling cleanly onto the baseline.
     - Added subtle kinetic squash/stretch during high-speed vertical displacement (`scaleY: 1.1`).
   - Completely eliminated any bottom letter residue during transitions: increased plunge displacement to `yPercent: 220`, faded outgoing characters to `opacity: 0`, set immediate `visibility: hidden` upon completion, and added `overflow: hidden` on `.word-layer`.
+- [x] Implemented 3D Folded Infinite Scrolling Type Wall Section (`scroll-26-650.webm` & `deadspace-typewall-manifesto-prompt.md`):
+  - Created [typewall-manifesto.js](file:///c:/boards/of/code/src/components/typewall-manifesto.js) with 3-cycle seamless infinite marquee loop (18 rows total) and visibility-based RAF sleep.
+  - Implemented real-time dynamic 3D cylinder fold distortion:
+    - Center rows remain flat and crisp on the focal plane.
+    - Rows approaching top and bottom view bounds progressively fold backward into 3D space (`rotateX(-normDist * 68deg)`).
+    - Added foreshortening (`scaleY(Math.cos(...))`), depth recession (`translateZ(-...px)`), and raking shear (`skewX(-normDist * 5.5deg)`).
+  - Designed 6 distinct repeating typographic row styles matching the reference:
+    - Row 1: High-contrast Bodoni Didone serif (`ANDREW` / `NEW YORK` / `ANDREW`).
+    - Row 2: Heavy Grotesk (`SANDECA` / `BUDAPEST` / `SANDECA`).
+# DeadSpace / Lab Website - Implementation Worklog
+
+## Status: Complete & Refined (Wipe Background & Split-Screen Pinning)
+- [x] Extracted and analyzed prompt specifications from `deadspace-lab-website-prompt.md`.
+- [x] Analyzed original reference video `scroll-60-650.webm`.
+- [x] Analyzed user screenshot feedback and screen recording.
+- [x] Resolved black background bleed:
+  - Reduced `.wipe-section` height from `320vh` to `100vh` so GSAP pin-spacer accurately controls scroll travel with zero dead space.
+  - Dynamically updated `.wipe-section` and `.wipe-sticky-stage` background to pure `#E8080A` as soon as the circle expands, ensuring unbroken red surface throughout the entire transition.
+- [x] Implemented stationary pinned split-screen layout for Section 4 (Stats):
+  - Removed `overflow-x: hidden` from `html` and `body` that was breaking sticky/pinning contexts in Chromium.
+  - Configured GSAP ScrollTrigger to pin `.overview-sticky` (`LAB OVERVIEW` + description) stationary on screen at `top: 16vh`.
+  - Configured `.stats-col` with generous vertical spacing (`gap: 32vh`) so the right stats cards (`4`, `100`, `30`, `11`) scroll smoothly past the stationary overview.
+  - Updated caption for `11` to "ACTIVE CONTRIBUTORS SPANNING DESIGN DEVELOPMENT" to match video frame 22.
+- [x] Resolved statement fade-out & page gap (seamless single-page red flow):
+  - Completely eliminated the fade-out tween (`opacity: 0.1`) on `IDEAS EMERGE THROUGH CONTROLLED EXPERIMENTATION.` so it stays permanently 100% visible and crisp black.
+  - Eliminated the dead hold delay in `src/components/radial-wipe.js` and streamlined scrub distance from `+=280%` to `+=120%`.
+  - Removed top padding on `.statement-stats-section` and `.stats-col` so the statement and `LAB OVERVIEW` + stats flow directly on the same continuous red surface without any long scroll gap.
+  - Updated `src/components/chrome.js` to dynamically detect `wipe-section` as red, maintaining high-contrast HUD clock colors.
+- [x] Implemented mouse-reactive viscous fluid ink hover effect (`hover-14-650.webm`):
+  - Created [fluid-cursor.js](file:///c:/boards%20of%20code/src/components/fluid-cursor.js) with modular `FLUID_CONFIG` parameters.
+  - Implemented 9-joint spring-mass physics chain with inertia, velocity-dependent directional stretching, and subtle downward mass gravity.
+  - Generated smooth 28-point Catmull-Rom spline with dynamic tapering tail and resting puddle compression.
+  - Developed high-performance WebGL 2D metaball fragment shader with automatic sub-pixel antialiasing (`fwidth` / `smoothstep`) and subtle organic surface-tension noise.
+  - Configured natural loop and hole generation when fluid crosses or folds over itself.
+  - Integrated dynamic contrast theme adaptation: solid black ink (`#0A0A0A`) on red sections merging seamlessly with typography, and adaptive red ink (`#E8080A`) on dark sections.
+  - Configured non-blocking pointer interaction (`pointer-events: none`) so links, buttons, and scrolling operate with zero interruption.
+  - Added smooth materialization on cursor entry and physical momentum decay/dissolve on cursor leave or idle.
+  - Gracefully disabled on coarse touch / mobile devices.
+- [x] Refined fluid cursor physics, resting state, and scale:
+  - Ensured **zero presence when stationary**: the fluid now dissolves and completely vanishes when the cursor stops moving.
+  - Reduced blob scale by over 50% (`fluidSize: 26`) to match the sleek ribbon proportion of the reference video.
+  - Replaced aggressive spring acceleration with buttery-smooth viscous drag and exponential mouse input smoothing.
+- [x] Transformed fluid hover from an opaque overlay into a dynamic color-inverting fluid lens:
+  - Applied CSS `mix-blend-mode: difference` on `.fluid-canvas`.
+  - Configured WebGL fragment shader with premultiplied alpha inversion key `#E8080A`.
+  - Result: wherever the fluid moves, it inverts underlying elements (Red background turns Black, Black typography turns vibrant Red).
+  - Ensured complete transparency and zero visual presence when stationary.
+- [x] Completely removed fluid hover effect per user request:
+  - Removed `<canvas id="fluid-canvas">` from `index.html`.
+  - Removed `.fluid-canvas` styles from `src/styles/main.css`.
+  - Removed `initFluidCursor` import and execution from `src/main.js`.
+  - Reverted website to its clean, pristine Swiss brutalist layout and interactions.
+- [x] Implemented Cinematic Interactive Click-To-Reveal Intro Transition (`hero-25-650.webm`):
+  - Created [click-reveal-intro.js](file:///c:/boards/of/code/src/components/click-reveal-intro.js) with modular `INTRO_CONFIG` parameters.
+  - Built high-performance procedural WebGL fragment shader with organic Simplex/FBM noise, angle-dependent deformation waves, electric-blue (`#001DFF`) rim plasma energy, and native transparent mask reveal exposing the real website underneath without screenshot duplication.
+  - Implemented exact click origin mapping: clicking anywhere on the screen starts the expansion precisely from the cursor position.
+  - Integrated dynamic corner distance calculation: accurately determines distance from click point to farthest viewport corner to ensure zero black corners remain.
+  - Set up solid black full-screen overlay (`100vw × 100vh`, fixed, z-index: 99999) hiding the already-rendered website until clicked.
+  - Added clean, minimal, uppercase instruction `CLICK TO REVEAL` in center that instantly vanishes on click.
+  - Implemented strict lifecycle management: locks document scrolling and pauses Lenis during intro, unlocks scrolling and restores Lenis upon completion, removes DOM elements, and terminates the WebGL render loop (0% CPU/GPU overhead).
+  - Added accessibility features: keyboard activation (`Enter` / `Space`) and `prefers-reduced-motion` quick-fade fallback.
+  - Verified clean production build with `npm run build` (0 errors).
+  - Preserved existing site layout, typography, navigation, and styling completely intact underneath.
+- [x] Completely removed Click-To-Reveal intro transition per user request:
+  - Removed `<div id="intro-overlay">` and prompt elements from `index.html`.
+  - Removed all intro overlay CSS rules (`.intro-overlay`, `.intro-canvas`, `.intro-prompt`) from `src/styles/main.css`.
+  - Removed `initClickRevealIntro` import and execution from `src/main.js`.
+  - Reverted the site to its direct, pristine loading state.
+- [x] Implemented Directors Roster (Hover-Reveal Name Wall) Section (`hover-18-650.webm` & `deadspace-directors-roster-prompt.md`):
+  - Created [directors-roster.js](file:///c:/boards/of/code/src/components/directors-roster.js) with data-driven architecture (`DIRECTORS_DATA`).
+  - Implemented mechanical Guillotine / Split-Flap dual-layer typography transition (`Anton`, `power3.inOut`, ~320ms): outgoing word splits horizontally and slides off-screen (top up, bottom down), incoming word slices into place from the center line.
+  - Implemented horizontal thumbnail dock: 9 desaturated grayscale headshots (`54px × 56px`, `border-radius: 8px`) that scale up ~1.85x and crossfade to full color on hover.
+  - Added animated red circular CTA bubble (`#E8080A` with white `↗` icon) dynamically tethered to the bottom-right edge of the active enlarged thumbnail with smooth spring positioning (`back.out(2)`).
+  - Integrated into [index.html](file:///c:/boards/of/code/index.html) right above `#client-network` and styled in [main.css](file:///c:/boards/of/code/src/styles/main.css).
+  - Preserved the site's alternating Swiss brutalist color rhythm: Statement & Stats (RED) -> Directors Roster (BLACK `#0A0A0A`) -> Client Network (RED) -> Connect / Footer (BLACK).
+- [x] Refined Directors Roster Typography & Wave-Bending Animation (`hover-18-650.webm`):
+  - Completely eliminated the stray middle text "RECTORS" by replacing unstyled spans with clean, individual `.char-span` elements inside `.word-layer` and setting accessible `aria-label` attributes on `#roster-headline-stage`.
+  - Replaced the horizontal 50% split with the true **Wave-Bending Vertical Rolling Animation** matching the reference video:
+    - Outgoing name plunges downward (`yPercent: 125`) with center letters dropping first via parabolic center stagger (`from: 'center'`), creating a downward-bending arch.
+    - Incoming name rises from below (`yPercent: 0`) with center letters shooting up first, creating an upward-bending arch before settling cleanly onto the baseline.
+    - Added subtle kinetic squash/stretch during high-speed vertical displacement (`scaleY: 1.1`).
+  - Completely eliminated any bottom letter residue during transitions: increased plunge displacement to `yPercent: 220`, faded outgoing characters to `opacity: 0`, set immediate `visibility: hidden` upon completion, and added `overflow: hidden` on `.word-layer`.
+- [x] Implemented 3D Folded Infinite Scrolling Type Wall Section (`scroll-26-650.webm` & `deadspace-typewall-manifesto-prompt.md`):
+  - Created [typewall-manifesto.js](file:///c:/boards/of/code/src/components/typewall-manifesto.js) with 3-cycle seamless infinite marquee loop (18 rows total) and visibility-based RAF sleep.
+  - Implemented real-time dynamic 3D cylinder fold distortion:
+    - Center rows remain flat and crisp on the focal plane.
+    - Rows approaching top and bottom view bounds progressively fold backward into 3D space (`rotateX(-normDist * 68deg)`).
+    - Added foreshortening (`scaleY(Math.cos(...))`), depth recession (`translateZ(-...px)`), and raking shear (`skewX(-normDist * 5.5deg)`).
+  - Designed 6 distinct repeating typographic row styles matching the reference:
+    - Row 1: High-contrast Bodoni Didone serif (`ANDREW` / `NEW YORK` / `ANDREW`).
+    - Row 2: Heavy Grotesk (`SANDECA` / `BUDAPEST` / `SANDECA`).
+    - Row 3: 3D extruded block typography with halftone dot shadow styling (`FRANKLIN` / `BERLIN` / `FRANKLIN`).
+    - Row 4: Condensed Geometric + Hairline (`TOKYO` / `HOSHEN` / `TOKYO`).
+    - Row 5: Extended Sans + Italic Serif (`BOCELLI` / `BARCELONA` / `BOCELLI`).
+    - Row 6: Swiss Brand Red Signature with solid `#E8080A` tag (`SYSTEM` / `DEADSPACE` / `CONTROL`).
+  - Added Google Font `Bodoni Moda` and shared inline SVG `#halftone-dots` pattern in [index.html](file:///c:/boards/of/code/index.html).
+  - Integrated into `#manifesto` directly below the Hero section, respecting the alternating black background theme.
+  - Configured pointer hover slow-down (`0.3x` marquee speed) for user readability.
+  - Verified clean production build with `npm run build` (0 errors).
+- [x] Refined Section 3: Compact Solid Red Circle with Rotating Wavy Multi-Font Ring:
+  - Reduced disc diameter to compact `min(190px, 46vw)` (radius `95px`), fixing the oversized presentation and ensuring generous whitespace surrounding the dial.
+  - Rendered a complete, solid red (`#E8080A`) circle from the start, removing the pie-slice sweep.
+  - Set text spoke color to pure white (`#FFFFFF`) with high-contrast text shadow on the `#0A0A0A` background.
+  - Implemented 10 distinct, unique font families and weights for all 10 words (Bodoni Moda Italic, Cabinet Grotesk, Anton, Space Mono, Bodoni Moda 900, Cormorant Garamond, Syne, Archivo Black, JetBrains Mono, Space Grotesk).
+  - Built liquid sinusoidal wavy character animation (`ringCharWave`) undulating each letter perpendicular to its radial baseline (`translateY(sin(...) * 4px)`).
+  - Implemented 3-step scroll-scrubbed choreography:
+    - Step 1: Clockwise rotation (+120°).
+    - Step 2: Reverse / Anticlockwise rotation (-60°).
+    - Step 3: Fullscreen expansion (`scale: 28`) with text ring fade-out to reveal the red statement and stats section.
   - Verified clean production build with `npm run build` (0 errors).
 - [ ] User testing and verification on `http://localhost:5173/`.
-
-
-

@@ -6,6 +6,7 @@ import { WebGLHero } from './components/webgl-hero.js';
 import { initRadialWipe } from './components/radial-wipe.js';
 import { initChrome } from './components/chrome.js';
 import { initDirectorsRoster } from './components/directors-roster.js';
+import { initTypeWallManifesto } from './components/typewall-manifesto.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -32,43 +33,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // 2. Initialize HUD Chrome & Interactive Systems
   initChrome();
 
-  // 3. Initialize Directors Roster Hover-Reveal Section
+  // 3. Initialize 3D Folded Infinite Scrolling Type Wall Manifesto
+  initTypeWallManifesto();
+
+  // 4. Initialize Directors Roster Hover-Reveal Section
   initDirectorsRoster();
 
-  // 3. Initialize WebGL Hero 3D Halftone Scene
+  // 5. Initialize WebGL Hero 3D Halftone Scene
   const canvasContainer = document.getElementById('webgl-canvas-container');
   let webglHero = null;
   if (canvasContainer) {
     webglHero = new WebGLHero(canvasContainer);
   }
 
-  // 4. Initialize Signature Radial Wipe Transition
+  // 6. Initialize Signature Radial Wipe Transition
   initRadialWipe();
-
-  // 5. Scroll Reveals for Manifesto
-  gsap.from('.manifesto-text.p1', {
-    scrollTrigger: {
-      trigger: '.manifesto-text.p1',
-      start: 'top 80%',
-      toggleActions: 'play none none reverse'
-    },
-    opacity: 0,
-    y: 50,
-    duration: 1.2,
-    ease: 'power3.out'
-  });
-
-  gsap.from('.manifesto-text.p2', {
-    scrollTrigger: {
-      trigger: '.manifesto-text.p2',
-      start: 'top 80%',
-      toggleActions: 'play none none reverse'
-    },
-    opacity: 0,
-    y: 50,
-    duration: 1.2,
-    ease: 'power3.out'
-  });
 
   // 6. Pin LAB OVERVIEW (Left Column) stationary while Stats Cards (Right Column) scroll
   ScrollTrigger.create({

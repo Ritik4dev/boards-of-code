@@ -1,5 +1,6 @@
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { initCircleTextRing } from './circle-text-ring.js';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -13,43 +14,54 @@ export function initRadialWipe() {
 
   if (!wipeSection || !wipeDisc || !textOverlay) return;
 
-  // Initial states: words are hidden, disc starts at 0deg sweep
-  const sweepProxy = { deg: 0 };
+  const elementWrap = wipeSection.querySelector('.wipe-element-wrap');
+  const textRing = initCircleTextRing(elementWrap, wipeDisc);
+
+  // Initial states
   gsap.set([wordIdeas, wordEmerge, wordExperimentation], { opacity: 0, y: 15 });
+  gsap.set(wipeDisc, { scale: 1, rotation: 0, transformOrigin: '50% 50%' });
+  if (textRing && textRing.ringWrap) {
+    gsap.set(textRing.ringWrap, { scale: 1, rotation: 0, opacity: 1, transformOrigin: '0 0' });
+  }
 
   const tl = gsap.timeline({
     scrollTrigger: {
       trigger: wipeSection,
       start: 'top top',
-      end: '+=120%',
+      end: '+=160%',
       pin: true,
       scrub: 0.6,
       anticipatePin: 1
     }
   });
 
+  const rotTargets = textRing && textRing.ringWrap ? [wipeDisc, textRing.ringWrap] : [wipeDisc];
+
   // -------------------------------------------------------------
-  // Phase 1: Clockwise sweep from 0deg to 360deg (black background)
+  // Phase 1: Rotate Clockwise on scroll scrub (+120deg)
   // -------------------------------------------------------------
-  tl.to(sweepProxy, {
-    deg: 360,
+  tl.to(rotTargets, {
+    rotation: 120,
     duration: 1.0,
-    ease: 'power1.inOut',
-    onUpdate: () => {
-      wipeDisc.style.setProperty('--sweep-deg', `${sweepProxy.deg}deg`);
-    }
+    ease: 'power1.inOut'
   });
 
   // -------------------------------------------------------------
-  // Phase 2: Circle expands to fill the viewport
-  // CRITICAL: The text does NOT expand with the circle!
-  // The text remains fixed at its normal font size and appears sequentially.
-  // Once expanded, background is pure red and text remains 100% opaque.
+  // Phase 2: Reverse and Rotate Anticlockwise on scroll scrub (-60deg)
+  // -------------------------------------------------------------
+  tl.to(rotTargets, {
+    rotation: -60,
+    duration: 1.0,
+    ease: 'power1.inOut'
+  });
+
+  // -------------------------------------------------------------
+  // Phase 3: Circle expands to fill the viewport & text ring fades
   // -------------------------------------------------------------
   const stage = wipeSection.querySelector('.wipe-sticky-stage');
 
   tl.to(wipeDisc, {
-    scale: 18,
+    scale: 28,
     duration: 1.2,
     ease: 'power2.inOut',
     onUpdate: function() {
@@ -65,7 +77,23 @@ export function initRadialWipe() {
     }
   });
 
-  // "IDEAS" appears as the circle starts expanding
+  // Text ring scales in exact lockstep with circle expansion
+  if (textRing && textRing.ringWrap) {
+    tl.to(textRing.ringWrap, {
+      scale: 28,
+      duration: 1.2,
+      ease: 'power2.inOut'
+    }, '<');
+
+    // Text ring gracefully fades out before the IDEAS headline emerges
+    tl.to(textRing.ringWrap, {
+      opacity: 0,
+      duration: 0.25,
+      ease: 'power1.in'
+    }, '<+=0.06');
+  }
+
+  // "IDEAS" appears as the circle expands
   tl.to(wordIdeas, {
     opacity: 1,
     y: 0,

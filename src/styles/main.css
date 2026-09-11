@@ -279,37 +279,226 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   SECTION 2: MANIFESTO (BLACK #0A0A0A)
+   SECTION 2: 3D FOLDED INFINITE SCROLLING TYPE WALL (BLACK #0A0A0A)
    -------------------------------------------------------------------------- */
-.manifesto-section {
+.typewall-section {
   position: relative;
   width: 100vw;
-  min-height: 110vh;
+  height: 100vh;
+  min-height: 100vh;
   background-color: var(--color-black);
-  color: var(--color-red);
-  padding: 18vh 4vw 20vh 4vw;
-  display: flex;
-  align-items: center;
+  overflow: hidden;
   z-index: 3;
 }
 
-.manifesto-container {
-  max-width: 92vw;
-  margin: 0 auto;
+.typewall-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 900px;
+  perspective-origin: 50% 50%;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.manifesto-text {
+/* Vignettes for dramatic cylinder curvature depth */
+.typewall-vignette {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 22vh;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.typewall-vignette.top {
+  top: 0;
+  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0) 100%);
+}
+
+.typewall-vignette.bottom {
+  bottom: 0;
+  background: linear-gradient(to top, rgba(10, 10, 10, 0.95) 0%, rgba(10, 10, 10, 0) 100%);
+}
+
+/* 3D Track Container */
+.typewall-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+
+/* Each Typographic Row */
+.typewall-row {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(75px, 13vh, 125px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform-origin: 50% 50%;
+  transform-style: preserve-3d;
+  will-change: transform, opacity;
+  user-select: none;
+}
+
+.row-inner {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  white-space: nowrap;
+  gap: clamp(1.2rem, 3.2vw, 3.8rem);
+  padding: 0 2vw;
+}
+
+.tw-part {
+  display: inline-block;
+  line-height: 0.85;
+  text-transform: uppercase;
+  color: var(--color-white);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   6 DISTINCT TYPOGRAPHIC ROW STYLES
+   -------------------------------------------------------------------------- */
+
+/* Style 1: Bold Modern Serif (Didone) - e.g. ANDREW / NEW YORK */
+.typewall-row.row-serif .tw-part.tw-outer {
+  font-family: 'Bodoni Moda', 'Playfair Display', serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(3.8rem, 9.8vw, 8.8rem);
+  letter-spacing: -0.01em;
+  opacity: 0.88;
+}
+
+.typewall-row.row-serif .tw-part.tw-center {
+  font-family: 'Bodoni Moda', 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(4.4rem, 11vw, 10.2rem);
+  letter-spacing: -0.02em;
+}
+
+/* Style 2: Bold Grotesk / Sans - e.g. SANDECA / BUDAPEST */
+.typewall-row.row-grotesk .tw-part.tw-outer {
   font-family: var(--font-body);
   font-weight: 500;
-  font-size: clamp(1.6rem, 3.4vw, 3.3rem);
-  line-height: 1.22;
-  letter-spacing: -0.015em;
-  color: var(--color-red);
-  margin-bottom: 7rem;
+  font-size: clamp(3.2rem, 8.4vw, 7.8rem);
+  letter-spacing: 0.04em;
+  opacity: 0.85;
 }
 
-.manifesto-text:last-child {
-  margin-bottom: 0;
+.typewall-row.row-grotesk .tw-part.tw-center {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(4.6rem, 12vw, 10.8rem);
+  letter-spacing: -0.02em;
+}
+
+/* Style 3: 3D Extruded Block with Halftone Shadow - e.g. FRANKLIN / BERLIN */
+.typewall-row.row-extruded .tw-part.tw-thin {
+  font-family: var(--font-body);
+  font-weight: 300;
+  font-size: clamp(3.4rem, 8.8vw, 8.2rem);
+  letter-spacing: 0.08em;
+  opacity: 0.9;
+}
+
+.typewall-row.row-extruded .tw-part.tw-extruded {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(4.2rem, 10.5vw, 9.8rem);
+  letter-spacing: 0.02em;
+  color: var(--color-black);
+  -webkit-text-stroke: 2px #FFFFFF;
+  text-shadow:
+    1px 1px 0 #FFFFFF,
+    2px 2px 0 #0A0A0A,
+    3px 3px 0 #FFFFFF,
+    4px 4px 0 #0A0A0A,
+    5px 5px 0 #FFFFFF,
+    6px 6px 0 #0A0A0A,
+    7px 7px 0 #FFFFFF,
+    8px 8px 0 #0A0A0A,
+    9px 9px 0 #FFFFFF,
+    10px 10px 0 #0A0A0A,
+    11px 11px 0 #FFFFFF;
+}
+
+/* Style 4: Bold Condensed Geometric Sans + Hairline Serif - e.g. TOKYO / HOSHEN */
+.typewall-row.row-condensed .tw-part.tw-outer {
+  font-family: 'Bodoni Moda', serif;
+  font-weight: 400;
+  font-size: clamp(3.6rem, 9.2vw, 8.5rem);
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+.typewall-row.row-condensed .tw-part.tw-center {
+  font-family: 'Anton', 'Archivo Black', sans-serif;
+  font-weight: 900;
+  font-size: clamp(4.8rem, 12.5vw, 11.2rem);
+  letter-spacing: -0.01em;
+}
+
+/* Style 5: Elegant Thin Serif + Extended Sans - e.g. BOCELLI / BARCELONA */
+.typewall-row.row-extended .tw-part.tw-outer {
+  font-family: 'Bodoni Moda', serif;
+  font-weight: 400;
+  font-style: italic;
+  font-size: clamp(3.4rem, 8.8vw, 8rem);
+  letter-spacing: 0.02em;
+  opacity: 0.85;
+}
+
+.typewall-row.row-extended .tw-part.tw-center {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(4.2rem, 11vw, 10rem);
+  letter-spacing: 0.04em;
+}
+
+/* Style 6: Swiss Brand Accent Row - e.g. SYSTEM / DEADSPACE / CONTROL */
+.typewall-row.row-deadspace .tw-part.tw-outer {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: clamp(2.8rem, 7vw, 6.5rem);
+  letter-spacing: 0.1em;
+  opacity: 0.8;
+}
+
+.typewall-row.row-deadspace .tw-part.tw-center.tw-accent {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: clamp(4.6rem, 12vw, 11rem);
+  letter-spacing: -0.02em;
+  color: var(--color-red);
+}
+
+/* Reduced Motion Fallback */
+.typewall-track.is-reduced-motion {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.typewall-track.is-reduced-motion .typewall-row {
+  position: relative;
+  transform: none !important;
+  opacity: 1 !important;
+  margin: 1.5vh 0;
 }
 
 /* --------------------------------------------------------------------------
@@ -348,12 +537,154 @@ body {
 }
 
 .wipe-disc {
-  width: 480px;
-  height: 480px;
+  width: min(190px, 46vw);
+  height: min(190px, 46vw);
   border-radius: 50%;
-  background: conic-gradient(from 0deg at 50% 50%, var(--color-red) var(--sweep-deg), transparent var(--sweep-deg));
+  background-color: var(--color-red);
   transform: scale(1);
-  will-change: transform, background;
+  will-change: transform;
+}
+
+/* --------------------------------------------------------------------------
+   ROTATING RADIAL TEXT RING (COMPACT WHITE WAVY MULTI-FONT HALO)
+   -------------------------------------------------------------------------- */
+.wipe-text-ring-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 2;
+  will-change: transform, opacity;
+  transform-origin: 0 0;
+}
+
+.text-ring-spinner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.text-ring-spoke {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: 0 50%;
+  white-space: nowrap;
+  font-size: clamp(11px, 1.05vw, 13.5px);
+  line-height: 1;
+  color: #FFFFFF;
+  text-shadow: 0 0 2px rgba(255, 255, 255, 0.45);
+  user-select: none;
+  pointer-events: none;
+  will-change: transform;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Undulating Wavy Character Animation */
+.ring-char {
+  display: inline-block;
+  animation: ringCharWave 2.2s ease-in-out infinite;
+  will-change: transform;
+}
+
+@keyframes ringCharWave {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-4px) rotate(1.5deg);
+  }
+  75% {
+    transform: translateY(4px) rotate(-1.5deg);
+  }
+}
+
+/* 10 Distinct Typographic Styles for the Radial Words */
+.spoke-font-0 {
+  font-family: 'Bodoni Moda', 'Didot', serif;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+.spoke-font-1 {
+  font-family: 'Cabinet Grotesk', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.spoke-font-2 {
+  font-family: 'Anton', 'Archivo Black', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.spoke-font-3 {
+  font-family: 'Space Mono', monospace;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.spoke-font-4 {
+  font-family: 'Bodoni Moda', serif;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.spoke-font-5 {
+  font-family: 'Cormorant Garamond', 'Playfair Display', serif;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.spoke-font-6 {
+  font-family: 'Syne', sans-serif;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.spoke-font-7 {
+  font-family: 'Archivo Black', sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.spoke-font-8 {
+  font-family: 'JetBrains Mono', monospace;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+}
+
+.spoke-font-9 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-char {
+    animation: none !important;
+  }
 }
 
 .wipe-text-overlay {
