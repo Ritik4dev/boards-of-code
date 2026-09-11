@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DEADSPACE / LAB — Digital Research & Interface Lab</title>
+  <meta name="description" content="A dark, brutalist digital research lab exploring spatial design, motion behavior, and interface logic.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Cabinet+Grotesk:wght@500;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@500,600,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./src/styles/main.css">
+</head>
+<body class="theme-red">
+  <!-- Persistent Top HUD Chrome -->
+  <header id="hud-top" class="hud-top">
+    <div class="hud-left">
+      <button class="hud-menu-btn" aria-label="Menu">
+        <span class="hud-hamburger">
+          <span></span>
+          <span></span>
+        </span>
+        <span id="hud-timer" class="hud-timer">08:48</span>
+      </button>
+    </div>
+    <div class="hud-center">
+      <div class="brand-glyph" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="currentColor">
+          <path d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm0 24c-5.523 0-10-4.477-10-10s4.477-10 10-10 10 4.477 10 10-4.477 10-10 10z"/>
+          <path d="M16 8a8 8 0 0 0 0 16v-3a5 5 0 0 1 0-10V8z"/>
+        </svg>
+      </div>
+    </div>
+    <div class="hud-right">
+      <div class="hud-status">
+        <span class="hud-mono">A_000000.17</span>
+        <span class="hud-warning-icon">▲</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Persistent Bottom Pinned Control Button -->
+  <aside id="hud-bottom" class="hud-bottom">
+    <button class="bottom-cue-btn" id="cue-btn" aria-label="Audio / Scroll Action">
+      <span class="dash-icon"></span>
+    </button>
+  </aside>
+
+  <!-- Main Scroll Container -->
+  <main id="app">
+    <!-- SECTION 1: HERO -->
+    <section id="hero" class="section hero-section">
+      <div id="webgl-canvas-container" class="webgl-canvas-container"></div>
+      
+      <div class="hero-overlay">
+        <div class="hero-bottom-left">
+          <h1 class="hero-wordmark">LAB</h1>
+        </div>
+        <div class="hero-bottom-right">
+          <div class="hero-readout">
+            <span class="readout-label">SYS.LOC</span>
+            <span class="readout-val">34.0522° N, 118.2437° W</span>
+            <span class="readout-state">[A] 00.000.17 ACTIVE</span>
+          </div>
+        </div>
+      </div>
+      <div class="jagged-divider" aria-hidden="true"></div>
+    </section>
+
+    <!-- SECTION 2: MANIFESTO -->
+    <section id="manifesto" class="section manifesto-section">
+      <div class="manifesto-container">
+        <p class="manifesto-text p1">
+          The lab functions as a controlled environment for exploring spatial design, motion behavior, and interface logic. It exists outside production timelines, allowing ideas to be tested without pressure for resolution. Here, layouts are treated as systems, motion as structure, and interaction as a measurable response rather than a visual effect.
+        </p>
+        <p class="manifesto-text p2">
+          Work developed within the lab follows an iterative process of observation, adjustment, and refinement. Experiments are built to be broken, analyzed, and reconstructed until their behavior feels deliberate and coherent. Emphasis is placed on clarity, balance, and restraint.
+        </p>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SIGNATURE RADIAL WIPE TRANSITION -->
+    <section id="wipe-section" class="wipe-section">
+      <div class="wipe-sticky-stage">
+        <!-- The expanding red wipe disc (background only, no text inside) -->
+        <div class="wipe-element-wrap">
+          <div class="wipe-disc" id="wipe-disc"></div>
+        </div>
+
+        <!-- The statement text overlay: fixed at center, NOT scaled by the disc -->
+        <div class="wipe-text-overlay" id="wipe-text-overlay">
+          <h2 class="wipe-statement">
+            <span class="wipe-line-1">
+              <span class="word-part word-ideas" id="word-ideas">IDEAS</span>
+              <span class="word-part word-emerge" id="word-emerge"> EMERGE THROUGH CONTROLLED</span>
+            </span>
+            <span class="wipe-line-2">
+              <span class="word-part word-experimentation" id="word-experimentation">EXPERIMENTATION.</span>
+            </span>
+          </h2>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: STATEMENT + STATS -->
+    <section id="statement-stats" class="section statement-stats-section">
+      <div class="stats-overview-grid">
+        <div class="overview-col">
+          <div class="overview-sticky">
+            <h3 class="overview-title">LAB OVERVIEW</h3>
+            <p class="overview-desc">
+              A dedicated spatial intelligence and interaction division researching algorithmic composition, kinetic layouts, and interface feedback primitives outside commercial product delivery cycles.
+            </p>
+            <div class="overview-meta">
+              <span>RESEARCH DEPT // ARCHIVE_REV_04</span>
+              <span>STATE: OPERATIONAL</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-col">
+          <article class="stat-card">
+            <div class="stat-divider"></div>
+            <div class="stat-content">
+              <span class="stat-number">4</span>
+              <p class="stat-caption">YEARS OF GROWTH ACROSS STUDIO AND LAB OPERATIONS THROUGHOUT</p>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-divider"></div>
+            <div class="stat-content">
+              <span class="stat-number">100</span>
+              <p class="stat-caption">DOCUMENTED ENGAGEMENTS DURING RECENT RELEASES</p>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-divider"></div>
+            <div class="stat-content">
+              <span class="stat-number">30</span>
+              <p class="stat-caption">DISTINCT SYSTEM EXPERIMENTS DEPLOYED ACROSS CLIENT WORK</p>
+            </div>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-divider"></div>
+            <div class="stat-content">
+              <span class="stat-number">11</span>
+              <p class="stat-caption">ACTIVE CONTRIBUTORS SPANNING DESIGN DEVELOPMENT</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4.5: DIRECTORS ROSTER (Hover-Reveal Name Wall) -->
+    <section id="directors-roster" class="section directors-section">
+      <div class="directors-container">
+        <!-- Horizontal Thumbnail Dock -->
+        <div class="directors-dock" role="region" aria-label="Directors Talent Roster">
+          <div class="roster-item" data-index="1" data-name="MARCUS" tabindex="0" role="button" aria-label="Director Marcus">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_1.png" alt="Director Marcus" class="roster-thumb-img" />
+            </div>
+          </div>
+          <div class="roster-item" data-index="2" data-name="ELENA" tabindex="0" role="button" aria-label="Director Elena">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_2.png" alt="Director Elena" class="roster-thumb-img" />
+            </div>
+          </div>
+          <div class="roster-item" data-index="3" data-name="MALIK" tabindex="0" role="button" aria-label="Director Malik">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_3.png" alt="Director Malik" class="roster-thumb-img" />
+            </div>
+          </div>
+          <div class="roster-item" data-index="4" data-name="GABRIEL" tabindex="0" role="button" aria-label="Director Gabriel">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_4.png" alt="Director Gabriel" class="roster-thumb-img" />
+            </div>
+          </div>
+          <div class="roster-item" data-index="5" data-name="SPENCER" tabindex="0" role="button" aria-label="Director Spencer">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_5.png" alt="Director Spencer" class="roster-thumb-img" />
+            </div>
+          </div>
+          <div class="roster-item" data-index="6" data-name="HANS" tabindex="0" role="button" aria-label="Director Hans">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_6.png" alt="Director Hans" class="roster-thumb-img" />
+            </div>
+          </div>
+          <div class="roster-item" data-index="7" data-name="DAVID" tabindex="0" role="button" aria-label="Director David">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_7.png" alt="Director David" class="roster-thumb-img" />
+            </div>
+          </div>
+          <div class="roster-item" data-index="8" data-name="THADDEUS" tabindex="0" role="button" aria-label="Director Thaddeus">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_8.png" alt="Director Thaddeus" class="roster-thumb-img" />
+            </div>
+          </div>
+          <div class="roster-item" data-index="9" data-name="PEYTON" tabindex="0" role="button" aria-label="Director Peyton">
+            <div class="roster-thumb-wrap">
+              <img src="/directors/director_9.png" alt="Director Peyton" class="roster-thumb-img" />
+            </div>
+          </div>
+
+          <!-- Red Floating CTA Bubble (↗) -->
+          <div class="roster-cta-bubble" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="7" y1="17" x2="17" y2="7"></line>
+              <polyline points="7 7 17 7 17 17"></polyline>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Giant Wave-Bending Rolling Headline Stage -->
+        <div class="roster-headline-stage" id="roster-headline-stage" aria-label="DIRECTORS">
+          <!-- Layer A (Active) -->
+          <div class="word-layer layer-a is-default-title">
+            <div class="word-chars">
+              <span class="char-span">D</span>
+              <span class="char-span">I</span>
+              <span class="char-span">R</span>
+              <span class="char-span">E</span>
+              <span class="char-span">C</span>
+              <span class="char-span">T</span>
+              <span class="char-span">O</span>
+              <span class="char-span">R</span>
+              <span class="char-span">S</span>
+            </div>
+          </div>
+          <!-- Layer B (Incoming) -->
+          <div class="word-layer layer-b">
+            <div class="word-chars"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: CLIENT NETWORK -->
+    <section id="client-network" class="section client-network-section">
+      <div class="client-network-wrapper">
+        <h2 class="network-title">CLIENT NETWORK</h2>
+        <div class="network-cloud" id="network-cloud">
+          <!-- Populated by JS for clean matrix density -->
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: CONNECT / FOOTER -->
+    <footer id="connect-footer" class="section footer-section">
+      <div class="footer-top-edge"></div>
+      <div class="footer-content">
+        <div class="footer-left">
+          <h2 class="footer-deadspace">DEADSPACE</h2>
+          <div class="footer-caption-bottom">
+            <span>EXPERIMENTAL DIVISION // RECORD 2026</span>
+            <span>ALL RIGHTS RESERVED // SEC_01</span>
+          </div>
+        </div>
+
+        <div class="footer-right">
+          <nav class="footer-nav" aria-label="Footer Navigation">
+            <ul class="footer-nav-list">
+              <li><a href="#hero">INDEX</a></li>
+              <li><a href="#statement-stats">LAB</a></li>
+              <li><a href="#manifesto">ARCHIVE</a></li>
+              <li><a href="#client-network">RECORD 01</a></li>
+              <li><a href="#connect-footer" class="active">CONNECT</a></li>
+            </ul>
+          </nav>
+
+          <div class="footer-social">
+            <ul class="social-list">
+              <li><a href="https://x.com" target="_blank" rel="noopener">X / TWITTER</a></li>
+              <li><a href="https://instagram.com" target="_blank" rel="noopener">INSTAGRAM</a></li>
+              <li><a href="https://github.com" target="_blank" rel="noopener">GITHUB</a></li>
+              <li><a href="https://read.cv" target="_blank" rel="noopener">READ.CV</a></li>
+              <li class="social-status">SYS_STATUS: OPTIMAL</li>
+              <li class="social-time" id="footer-time">UTC // 00:00:00</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

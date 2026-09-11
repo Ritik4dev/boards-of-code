@@ -1,0 +1,924 @@
+/* ==========================================================================
+   DEADSPACE / LAB — BRUTALIST SCROLL ARCHITECTURE
+   Color: Red (#E8080A) & Near-Black (#0A0A0A)
+   Typography: Anton / Archivo Black + Cabinet Grotesk + Space Mono
+   ========================================================================== */
+
+:root {
+  --color-red: #E8080A;
+  --color-red-dark: #A50007;
+  --color-red-dim: rgba(232, 8, 10, 0.4);
+  --color-black: #0A0A0A;
+  --color-black-pure: #000000;
+  --color-white: #FFFFFF;
+
+  --font-display: 'Anton', 'Archivo Black', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Cabinet Grotesk', 'General Sans', sans-serif;
+  --font-mono: 'Space Mono', 'JetBrains Mono', monospace;
+
+  --sweep-deg: 0deg;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  background-color: var(--color-black);
+  color: var(--color-black);
+  font-family: var(--font-body);
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+  background-color: var(--color-black);
+  overflow-x: clip;
+}
+
+
+/* --------------------------------------------------------------------------
+   PERSISTENT HUD CHROME (TOP)
+   -------------------------------------------------------------------------- */
+.hud-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 64px;
+  padding: 0 3vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 9999;
+  pointer-events: none;
+  transition: color 0.25s ease;
+}
+
+.hud-top.theme-red-bg {
+  color: var(--color-black);
+}
+
+.hud-top.theme-black-bg {
+  color: var(--color-red);
+}
+
+.hud-left,
+.hud-center,
+.hud-right {
+  display: flex;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.hud-menu-btn {
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  padding: 8px 0;
+}
+
+.hud-hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 18px;
+  height: 10px;
+}
+
+.hud-hamburger span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.hud-timer {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.brand-glyph {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+}
+
+.brand-glyph svg {
+  width: 100%;
+  height: 100%;
+}
+
+.hud-status {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.hud-warning-icon {
+  font-size: 10px;
+  transform: translateY(-1px);
+}
+
+/* --------------------------------------------------------------------------
+   PERSISTENT HUD CHROME (BOTTOM PINNED CUE BUTTON)
+   -------------------------------------------------------------------------- */
+.hud-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  pointer-events: auto;
+}
+
+.bottom-cue-btn {
+  width: 108px;
+  height: 54px;
+  background-color: var(--color-black);
+  border: none;
+  border-top-left-radius: 54px;
+  border-top-right-radius: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), background-color 0.2s ease;
+  position: relative;
+}
+
+.bottom-cue-btn:hover {
+  transform: scale(1.05);
+}
+
+.bottom-cue-btn .dash-icon {
+  width: 20px;
+  height: 2.5px;
+  background-color: var(--color-red);
+  display: block;
+  border-radius: 1px;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 1: HERO (RED #E8080A)
+   -------------------------------------------------------------------------- */
+.hero-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-red);
+  color: var(--color-black);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.webgl-canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.webgl-canvas-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.hero-overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 3vw 2.5vh 3vw;
+}
+
+.hero-bottom-left {
+  pointer-events: auto;
+}
+
+.hero-wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(6.5rem, 16vw, 17rem);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  color: var(--color-black);
+  user-select: none;
+}
+
+.hero-bottom-right {
+  pointer-events: auto;
+  text-align: right;
+  padding-bottom: 0.5rem;
+}
+
+.hero-readout {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--color-black);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+.readout-label {
+  opacity: 0.7;
+}
+
+/* Jagged/Torn Divider between Hero and Manifesto */
+.jagged-divider {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 14px;
+  background-color: var(--color-black);
+  clip-path: polygon(
+    0% 100%,
+    2% 35%, 4% 85%, 6% 20%, 8% 70%, 10% 40%, 12% 90%, 15% 15%,
+    18% 75%, 21% 30%, 24% 80%, 27% 25%, 30% 65%, 33% 40%, 36% 85%,
+    40% 20%, 44% 75%, 48% 30%, 52% 90%, 56% 25%, 60% 70%, 64% 35%,
+    68% 85%, 72% 20%, 76% 80%, 80% 30%, 84% 75%, 88% 15%, 92% 85%,
+    96% 25%, 98% 70%, 100% 100%
+  );
+  z-index: 5;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 2: MANIFESTO (BLACK #0A0A0A)
+   -------------------------------------------------------------------------- */
+.manifesto-section {
+  position: relative;
+  width: 100vw;
+  min-height: 110vh;
+  background-color: var(--color-black);
+  color: var(--color-red);
+  padding: 18vh 4vw 20vh 4vw;
+  display: flex;
+  align-items: center;
+  z-index: 3;
+}
+
+.manifesto-container {
+  max-width: 92vw;
+  margin: 0 auto;
+}
+
+.manifesto-text {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 3.4vw, 3.3rem);
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+  color: var(--color-red);
+  margin-bottom: 7rem;
+}
+
+.manifesto-text:last-child {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 3: SIGNATURE RADIAL WIPE TRANSITION (PINNED SCROLL SCRUB)
+   -------------------------------------------------------------------------- */
+.wipe-section {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--color-black);
+  z-index: 10;
+  transition: background-color 0.1s ease;
+}
+
+.wipe-sticky-stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-black);
+  transition: background-color 0.1s ease;
+}
+
+.wipe-element-wrap {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.wipe-disc {
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg at 50% 50%, var(--color-red) var(--sweep-deg), transparent var(--sweep-deg));
+  transform: scale(1);
+  will-change: transform, background;
+}
+
+.wipe-text-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 90vw;
+  max-width: 1100px;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.wipe-statement {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.4vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  color: var(--color-black);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.wipe-line-1,
+.wipe-line-2 {
+  display: block;
+  white-space: nowrap;
+}
+
+.word-part {
+  display: inline-block;
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 4: STATEMENT + STATS (RED #E8080A)
+   -------------------------------------------------------------------------- */
+.statement-stats-section {
+  position: relative;
+  width: 100vw;
+  background-color: var(--color-red);
+  color: var(--color-black);
+  padding: 0 4vw 16vh 4vw;
+  z-index: 12;
+}
+
+.stats-overview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 6vw;
+  align-items: start;
+  position: relative;
+}
+
+.overview-col {
+  position: relative;
+  height: 100%;
+}
+
+.overview-sticky {
+  position: sticky;
+  top: 16vh;
+  will-change: transform;
+}
+
+.overview-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 3vw, 3.4rem);
+  letter-spacing: -0.01em;
+  line-height: 1;
+  margin-bottom: 1.5rem;
+}
+
+.overview-desc {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: clamp(1.1rem, 1.4vw, 1.35rem);
+  line-height: 1.42;
+  margin-bottom: 2rem;
+  max-width: 440px;
+}
+
+.overview-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.7;
+  letter-spacing: 0.05em;
+  display: flex;
+  flex-direction: column;
+  opacity: 0.85;
+}
+
+.stats-col {
+  display: flex;
+  flex-direction: column;
+  gap: 32vh;
+  padding-top: 0;
+  padding-bottom: 16vh;
+}
+
+.stat-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.stat-divider {
+  width: 3px;
+  min-height: 120px;
+  background-color: var(--color-black);
+  align-self: stretch;
+}
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-number {
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 9.5vw, 10.5rem);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  color: var(--color-black);
+}
+
+.stat-caption {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2vw, 1.9rem);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--color-black);
+  margin-top: 1.2rem;
+  max-width: 520px;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 4.5: DIRECTORS ROSTER (BLACK #0A0A0A)
+   -------------------------------------------------------------------------- */
+.directors-section {
+  position: relative;
+  width: 100vw;
+  min-height: 100vh;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 12vh 4vw;
+  z-index: 12;
+  overflow: hidden;
+}
+
+.directors-container {
+  width: 100%;
+  max-width: 1440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* 1. Horizontal Thumbnail Dock */
+.directors-dock {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: clamp(4rem, 9vh, 8rem);
+  z-index: 10;
+  padding: 1rem;
+}
+
+.roster-item {
+  position: relative;
+  width: 54px;
+  height: 56px;
+  cursor: pointer;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roster-thumb-wrap {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #1a1a1a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+  transition: transform 0.28s cubic-bezier(0.2, 0, 0, 1),
+              filter 0.28s cubic-bezier(0.2, 0, 0, 1),
+              box-shadow 0.28s cubic-bezier(0.2, 0, 0, 1);
+  will-change: transform, filter;
+  transform-origin: center center;
+  filter: grayscale(100%) contrast(1.12) brightness(0.88);
+}
+
+.roster-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  pointer-events: none;
+}
+
+/* Hover / Focus state for thumbnail */
+.roster-item.is-hovered .roster-thumb-wrap,
+.roster-item:focus-visible .roster-thumb-wrap {
+  transform: scale(1.85);
+  filter: grayscale(0%) contrast(1.0) brightness(1.05);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7);
+  z-index: 20;
+}
+
+/* 2. Red Floating CTA Bubble (↗) */
+.roster-cta-bubble {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background-color: var(--color-red);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 25;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
+  box-shadow: 0 6px 20px rgba(232, 8, 10, 0.45);
+}
+
+.roster-cta-bubble svg {
+  width: 22px;
+  height: 22px;
+  stroke: var(--color-white);
+  stroke-width: 2.6;
+}
+
+/* 3. Giant Wave-Bending Rolling Headline */
+.roster-headline-stage {
+  position: relative;
+  width: 100%;
+  height: clamp(6.5rem, 19vw, 15rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  user-select: none;
+}
+
+.word-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.word-chars {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.char-span {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: clamp(4.8rem, 16.5vw, 14rem);
+  line-height: 0.82;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  will-change: transform;
+  transform-origin: center bottom;
+  color: var(--color-white);
+  transition: color 0.15s ease;
+}
+
+.word-layer.is-default-title .char-span {
+  color: var(--color-white);
+}
+
+.word-layer.is-active-name .char-span {
+  color: var(--color-red);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .directors-dock {
+    gap: 6px;
+    padding: 0.5rem;
+    max-width: 100vw;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .directors-dock::-webkit-scrollbar {
+    display: none;
+  }
+  .roster-item {
+    width: 38px;
+    height: 40px;
+    flex-shrink: 0;
+  }
+  .roster-item.is-hovered .roster-thumb-wrap {
+    transform: scale(1.6);
+  }
+  .roster-cta-bubble {
+    width: 36px;
+    height: 36px;
+  }
+  .roster-cta-bubble svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 5: CLIENT NETWORK (RED #E8080A)
+   -------------------------------------------------------------------------- */
+.client-network-section {
+  position: relative;
+  width: 100vw;
+  background-color: var(--color-red);
+  color: var(--color-black);
+  padding: 10vh 4vw 18vh 4vw;
+  z-index: 12;
+}
+
+.client-network-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.network-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 4.2vw, 4.8rem);
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin-bottom: 4rem;
+  text-align: center;
+}
+
+.network-cloud {
+  width: 100%;
+  max-width: 600px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.65;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  text-align: justify;
+  text-justify: inter-character;
+  color: var(--color-black);
+  word-break: break-word;
+  user-select: none;
+}
+
+.network-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   SECTION 6: CONNECT / FOOTER (BLACK #0A0A0A)
+   -------------------------------------------------------------------------- */
+.footer-section {
+  position: relative;
+  width: 100vw;
+  min-height: 90vh;
+  background-color: var(--color-black);
+  color: var(--color-red);
+  padding: 10vh 4vw 8vh 4vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 15;
+}
+
+.footer-top-edge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--color-red);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  margin-top: auto;
+}
+
+.footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.footer-deadspace {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 11vw, 12rem);
+  line-height: 0.82;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+  color: var(--color-red);
+}
+
+.footer-caption-bottom {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0.85;
+}
+
+.footer-right {
+  display: flex;
+  gap: 6vw;
+  align-items: flex-end;
+}
+
+.footer-nav-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.footer-nav-list li a {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.5vw, 4rem);
+  line-height: 1;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  color: var(--color-red);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  display: inline-block;
+}
+
+.footer-nav-list li a:hover {
+  transform: translateX(8px);
+  opacity: 0.85;
+}
+
+.footer-social {
+  padding-bottom: 0.8rem;
+}
+
+.social-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.social-list li a {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--color-red);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.social-list li a:hover {
+  opacity: 0.7;
+}
+
+.social-status,
+.social-time {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  opacity: 0.75;
+  margin-top: 0.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE BREAKPOINTS
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .stats-overview-grid {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+
+  .overview-sticky {
+    position: static;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4rem;
+  }
+
+  .footer-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 600px) {
+  .hud-top {
+    padding: 0 4vw;
+  }
+
+  .hud-status {
+    font-size: 10px;
+  }
+
+  .hero-wordmark {
+    font-size: 22vw;
+  }
+
+  .footer-right {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3rem;
+  }
+}
+
+/* Accessibility utility */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
